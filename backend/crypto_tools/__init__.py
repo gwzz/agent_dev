@@ -6,5 +6,4 @@ from .services import (
 
 __all__ = [
     "get_crypto_price",
-    "root_agent",
 ]

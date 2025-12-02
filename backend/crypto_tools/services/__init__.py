@@ -1,4 +1,4 @@
-"""Service layer for crypto tools."""
+"""Public exports for crypto tools services."""
 
 from .price import get_crypto_price
 

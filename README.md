@@ -1,27 +1,26 @@
 # Agent Development Project
 
-This project demonstrates the development of AI agents using the Google ADK (Agent Development Kit). It includes multiple agents with different capabilities for handling user queries.
+This is a comprehensive AI agent development platform featuring multiple specialized agents for different domains. The project is structured with a backend server handling AI agent logic and a frontend interface for user interaction.
 
 ## Project Structure
 
-- `ask_agent/`: A simple agent with one tool for getting time in cities
-- `city_info_expert/`: High-level exports for the city information expert agent
-- `multi_tool_agent/`: Core toolkit broken into focused service modules
-  - `services/weather.py`: OpenWeatherMap client utilities
-  - `services/time.py`: Timezone calculations backed by `zoneinfo`
-  - `services/location.py`: Coordinate lookups via OpenStreetMap
-  - `services/population.py`: Wikipedia-based population scraping
-  - `agent.py`: Wires the tools together and exposes `root_agent` for Google ADK
-- `pyproject.toml`: Project dependencies and configuration
-- `main.py`: Entry point for the application
+- `backend/`: Contains the AI agent server and various specialized agents
+  - `city_info_expert/`: High-level exports for the city information expert agent
+  - `crypto_expert/`: Cryptocurrency analysis and trading agent
+  - `agent_tools/`: Shared tools for various agent capabilities
+    - `services/weather.py`: OpenWeatherMap client utilities
+    - `services/time.py`: Timezone calculations and time management
+    - `services/timezones.py`: Timezone data and conversions
+    - `services/location.py`: Coordinate lookups via OpenStreetMap
+    - `services/population.py`: Wikipedia-based population scraping
+  - `main.py`: Entry point for the backend application
+  - `pyproject.toml`: Project dependencies and configuration
+- `frontend/`: Next.js-based web interface for interacting with agents
+  - Built with Next.js, TypeScript, and modern web technologies
 
 ## Features
 
-### ask_agent
-- Simple agent to get the current time in a specified city
-- Uses Google's Gemini model through the ADK framework
-
-### City Info Expert
+### City Information Expert
 - **Real-time Weather Information**: Get current weather for any city worldwide
   - Temperature (Celsius/Fahrenheit)
   - Weather description
@@ -36,44 +35,135 @@ This project demonstrates the development of AI agents using the Google ADK (Age
   - Includes full address information
 - **Population Lookup**: Retrieve approximate population information for major cities using Wikipedia parsing
 
+### Cryptocurrency Expert
+- **Cryptocurrency Analysis**: Real-time cryptocurrency market data
+- **Price Tracking**: Detailed price information for various cryptocurrencies
+- **Market Trends**: Insights into market movements and trends
+
+### General Agent Tools
+- **Weather Services**: Integration with OpenWeatherMap API
+- **Time Services**: Accurate timezone conversion and time calculations
+- **Location Services**: Coordinate lookups via OpenStreetMap
+- **Population Services**: City population data from Wikipedia
+
+## Tech Stack
+
+### Backend
+- Python 3.11+
+- Google Agent Development Kit (ADK)
+- LiteLLM
+- Requests
+- Geopy
+- Wikipedia API
+
+### Frontend
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+
 ## Setup
 
-1. **Install dependencies**:
+### Backend Setup
+1. Navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+
+2. Install dependencies:
    ```bash
    pip install -e .
    ```
 
-2. **Set up API keys**:
-  - For `city_info_expert`, you need an OpenWeatherMap API key
-   - Update `multi_tool_agent/.env` with your API key:
+3. Set up API keys for external services:
+   - For weather data, you need an OpenWeatherMap API key
+   - Create a `.env` file in `agent_tools/services/` with your API keys:
    ```
    OPENWEATHER_API_KEY=your_openweather_api_key_here
    ```
 
-## Usage
+### Frontend Setup
+1. Navigate to the frontend directory:
+   ```bash
+   cd frontend
+   ```
 
-Access tools directly from the package:
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-```python
-from multi_tool_agent import get_coordinates, get_current_time, get_weather
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-print(get_coordinates("Paris"))
+4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
+
+### Backend API Service
+1. Navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+
+2. Install dependencies:
+   ```bash
+   pip install -e .
+   ```
+
+3. Set up API keys (as needed):
+   - Create a `.env` file with your API keys (GOOGLE_API_KEY, OPENWEATHER_API_KEY)
+
+4. Run the FastAPI service:
+   ```bash
+   python main.py api
+   # or use uvicorn directly:
+   uvicorn api.main:app --host 0.0.0.0 --port 8000
+   ```
+
+5. Access the API at [http://localhost:8000](http://localhost:8000) with endpoints:
+   - `/city-info` - City information expert agent
+   - `/crypto` - Cryptocurrency expert agent
+   - `/weather/{city}` - Direct weather lookup
+   - `/time/{city}` - Direct time lookup
+   - `/coordinates/{city}` - Direct coordinates lookup
+   - `/population/{city}` - Direct population lookup
+   - `/crypto-price/{crypto}` - Direct crypto price lookup
+   - `/docs` - Interactive API documentation (Swagger UI)
+   - `/redoc` - Alternative API documentation (ReDoc)
+
+## Development
+
+### Running Backend Tests
+```bash
+cd backend
+pytest
 ```
 
-Or interact through the `city_info_expert` agent, which can:
-- Answer questions about the weather in specific cities
-- Provide the current time in different cities
-- Convert time between different time zones
-- Handle complex queries requiring multiple tools
-- Retrieve population estimates for major cities
+### Debugging Scripts
+The backend includes several debugging scripts:
+- `debug_detailed.py`: Script for detailed agent debugging
+- `debug_population.py`: Script for testing population lookup functionality
+- `test_crypto_agent.py`: Tests for cryptocurrency agent functionality
+- `test_crypto.py`: Additional cryptocurrency tests
+- `test_multiple_cities.py`: Tests for multi-city operations
 
-## Requirements
+## Architecture
 
-- Python 3.11+
-- Google ADK
-- LiteLLM
-- Requests
-- Geopy
+This project demonstrates a modular approach to AI agent development:
+- **Modular Agents**: Each agent is designed for specific domain expertise
+- **Shared Tools**: Common service utilities available to all agents
+- **Scalable Design**: Easy to add new agents and tools
+- **Web Interface**: Next.js frontend for easy interaction
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Commit your changes (`git commit -m 'Add some amazing feature'`)
+5. Push to the branch (`git push origin feature/amazing-feature`)
+6. Open a Pull Request
 
 ## License
 

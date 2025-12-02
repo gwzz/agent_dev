@@ -2,7 +2,7 @@
 
 from google.adk.agents import Agent
 
-from crypto_tools.services import (
+from crypto_tools.services.price import (
     get_crypto_price,
 )
 

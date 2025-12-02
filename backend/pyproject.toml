@@ -10,6 +10,11 @@ dependencies = [
     "requests>=2.31.0",
     "geopy>=2.4.0",
     "wikipedia-api>=0.6.1",
+    "fastapi>=0.104.1",
+    "uvicorn>=0.24.0",
+    "python-multipart>=0.0.6",
+    "pydantic>=2.0.0",
+    "python-dotenv>=1.0.0",
 ]
 
 [build-system]
@@ -17,4 +22,4 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["city_info_expert", "crypto_expert"]
+packages = ["city_info_expert", "crypto_expert", "law_expert", "law_tools", "crypto_tools", "api", "agent_tools", "agent_tools.services", "crypto_tools.services", "law_tools.services"]
