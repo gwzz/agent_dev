@@ -1,12 +1,12 @@
 import React from "react";
-import { 
+import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { 
+import {
   Card,
   CardContent,
   CardDescription,
@@ -16,7 +16,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
-import { 
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -26,18 +26,21 @@ import {
 import { useUIStore } from "@/store/uiStore";
 import { useAgentSettingsStore } from "@/store/agentSettingsStore";
 import { useChatStore } from "@/store/chatStore";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, Globe, Bitcoin, Scale } from "lucide-react";
 import { useTheme } from "next-themes";
+import { AgentType } from "@/types";
 
 const Sidebar = () => {
   const { sidebarOpen, setSidebarOpen } = useUIStore();
-  const { 
-    model, 
-    temperature, 
-    maxTokens, 
-    setModel, 
-    setTemperature, 
-    setMaxTokens 
+  const {
+    model,
+    temperature,
+    maxTokens,
+    agentType,
+    setModel,
+    setTemperature,
+    setMaxTokens,
+    setAgentType
   } = useAgentSettingsStore();
   const { createNewConversation } = useChatStore();
   const { setTheme, theme } = useTheme();
@@ -47,19 +50,57 @@ const Sidebar = () => {
     setSidebarOpen(false);
   };
 
+  // Agent type options
+  const agentOptions: { value: AgentType; label: string; icon: React.ReactNode }[] = [
+    { value: "city-info", label: "City Information Agent", icon: <Globe className="h-4 w-4" /> },
+    { value: "crypto", label: "Cryptocurrency Agent", icon: <Bitcoin className="h-4 w-4" /> },
+    { value: "law", label: "Legal Expert Agent", icon: <Scale className="h-4 w-4" /> },
+  ];
+
   return (
     <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
       <SheetContent side="left" className="w-[350px] sm:w-[400px]">
         <SheetHeader>
           <SheetTitle>Agent Settings</SheetTitle>
         </SheetHeader>
-        
+
         <div className="flex flex-col gap-6 py-4 overflow-y-auto">
           <Card>
             <CardHeader>
-              <CardTitle>Agent Information</CardTitle>
+              <CardTitle>Agent Type</CardTitle>
               <CardDescription>
-                Configure your AI agent preferences
+                Select which expert agent to use
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 gap-3">
+                {agentOptions.map((option) => (
+                  <Button
+                    key={option.value}
+                    variant={agentType === option.value ? "default" : "outline"}
+                    className="flex items-center justify-start gap-3 h-auto py-3 px-4 text-left"
+                    onClick={() => setAgentType(option.value)}
+                  >
+                    {option.icon}
+                    <div>
+                      <div className="font-medium">{option.label}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {option.value === "city-info" && "Weather, location, time, population"}
+                        {option.value === "crypto" && "Cryptocurrency prices, market data"}
+                        {option.value === "law" && "Legal information, statutes, cases"}
+                      </div>
+                    </div>
+                  </Button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Model Configuration</CardTitle>
+              <CardDescription>
+                Configure your AI model preferences
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -78,7 +119,7 @@ const Sidebar = () => {
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div className="space-y-2">
                 <Label>Temperature: {temperature.toFixed(1)}</Label>
                 <Slider
@@ -96,7 +137,7 @@ const Sidebar = () => {
                   <span>Creative</span>
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <Label>Max Tokens: {maxTokens}</Label>
                 <Slider
@@ -114,9 +155,9 @@ const Sidebar = () => {
                   <span>Long</span>
                 </div>
               </div>
-              
+
               <Separator />
-              
+
               <div className="space-y-2">
                 <Label>Theme</Label>
                 <div className="flex items-center gap-3">
@@ -150,22 +191,22 @@ const Sidebar = () => {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader>
               <CardTitle>About Agent</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                This is an AI assistant that can help you with various tasks. 
-                It can access real-time information and use tools to perform 
+                This is an AI assistant that can help you with various tasks.
+                It can access real-time information and use tools to perform
                 complex operations.
               </p>
             </CardContent>
           </Card>
-          
+
           <div className="pt-4">
-            <Button 
+            <Button
               onClick={handleClearChat}
               variant="destructive"
               className="w-full"

@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Agent Frontend
 
-## Getting Started
+Agent Frontend is a Next.js 16 (App Router + Turbopack) UI for interacting with multiple AI agents. It ships with a responsive chat surface, model/temperature controls, a history drawer, and shadcn/Radix UI components that keep the experience consistent across light and dark themes.
 
-First, run the development server:
+## Features
+- Chat interface with streaming indicator, markdown + code highlighting, and attachment placeholders.
+- Agent sidebar for choosing models, temperature, and max token limits.
+- Conversation history drawer with rename/delete actions persisted via Zustand storage.
+- API service layer (`src/lib/api.ts`) that routes chat input to backend agent endpoints.
 
+## Prerequisites
+- Node.js 18.18+ (or any version supported by Next 16).
+- npm 9+ (yarn/pnpm/bun also work, but the repo is configured for npm).
+- A running backend that exposes REST endpoints for the AI agents (see below).
+
+## Local Development
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install           # install dependencies once
+npm run dev           # start Next.js (defaults to http://localhost:3000)
+
+# other useful scripts
+npm run build         # production build
+npm start             # run the built app locally
+npm run lint          # eslint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> ℹ️ If port `3000` is busy, Next.js automatically falls back to the next free port and prints it in the terminal.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Connecting to the Backend
+The frontend talks to the backend through `NEXT_PUBLIC_BACKEND_URL` (default `http://localhost:8000`). Each chat request is proxied through the helper methods in `src/lib/api.ts`, which currently expect the backend to expose:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `POST /city-info`
+- `POST /crypto`
+- `POST /law`
 
-## Learn More
+Each endpoint should accept a JSON payload like `{ "query": "your prompt" }` and respond with `{ "status": "success", "result": { "content": "..." } }`.
 
-To learn more about Next.js, take a look at the following resources:
+### Configure the URL
+1. Create a `.env.local` file in the project root (ignored by git) and set the backend origin:
+	```bash
+	NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
+	```
+	Replace the value with the host/port where your backend runs (https, different host, etc.).
+2. Restart `npm run dev` (Next.js only reads env vars on startup).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Verify the connection
+1. Start your backend server and confirm the endpoints above return 200 locally (e.g., via `curl` or Postman).
+2. Start `npm run dev` for the frontend.
+3. Open the app in the browser, enter a prompt, and check the network tab: you should see calls heading to `${NEXT_PUBLIC_BACKEND_URL}/city-info` (or other agents if you wire them up). Any fetch errors bubble to the chat window.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+If you later add routing logic to `apiService.sendMessage`, keep the README in sync so backend integrators know which endpoints are required.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deployment
+When you are ready to deploy, build the app with `npm run build` and deploy the generated `.next` output to any platform that supports Next.js 16 (Vercel, Netlify, Docker, etc.). Make sure `NEXT_PUBLIC_BACKEND_URL` is set in the target environment so the app can reach your backend agents.

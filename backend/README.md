@@ -60,14 +60,18 @@ This backend project demonstrates the development of AI agents using the Google 
    pip install -e .
    ```
 
-2. **Set up API keys**:
+2. **Set up API keys and CORS**:
    - For weather data, you need an OpenWeatherMap API key
    - For Google AI services, you need a Google API key
-   - Create a `.env` file in the backend directory with your API keys:
+   - For CORS, you can configure allowed origins
+   - Create a `.env` file in the backend directory with your configurations:
    ```
    GOOGLE_API_KEY=your_google_api_key_here
    OPENWEATHER_API_KEY=your_openweather_api_key_here
+   ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
    ```
+
+   The `ALLOWED_ORIGINS` variable should contain a comma-separated list of origins that are allowed to make requests to the API. Use "*" to allow all origins (not recommended for production).
 
 ## Running the Service
 

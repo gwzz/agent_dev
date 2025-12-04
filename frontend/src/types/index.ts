@@ -22,8 +22,11 @@ export interface Conversation {
   messages: Message[];
 }
 
+export type AgentType = "city-info" | "crypto" | "law";
+
 export interface AgentSettings {
   model: string;
   temperature: number;
   maxTokens: number;
+  agentType: AgentType;
 }
